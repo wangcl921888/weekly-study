@@ -96,20 +96,47 @@ const p3 = sleep(500, 'ok3');
 
 ```js
 // 在这里写你的代码
+Promise.reject('err').then(res => {}).catch(err => console.log(err))
 
+async function testCatch() {
+  try {
+    const result = await Promise.reject("err");
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+testCatch();
 ```
 
 ### 任务 D 作答（贴代码）
 
 ```js
 // 在这里写你的 sleep(ms, { signal }) 和中断演示
+function sleep(ms, {signal}) {
+            return new Promise((resolve, reject) => {
+                const timer = setTimeout(resolve, ms);
 
+                signal?.addEventListener("abort", () => {
+                  clearTimeout(timer);
+                  reject(signal.reason)
+                });
+            });
+        }
+
+
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 1000);
+        sleep(2000, {signal: controller.signal}).catch((err) => {
+            clearTimeout(timer);
+            console.log(err);
+        });
 ```
 
 ### 今日复盘
 
-- 今天学到的点：
-- 卡壳 / 不理解的地方：
+- 今天学到的点：Promise,async,AbortController概念
+- 卡壳 / 不理解的地方：AbortController以前没有用过，初步了解并使用
 
 ### 验收自查
 
